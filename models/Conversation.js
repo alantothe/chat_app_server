@@ -1,19 +1,22 @@
 import mongoose from "mongoose";
 
 const conversationSchema = mongoose.Schema({
-    members: {
-        type: Array,
-    },
+    members: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }],
     lastMessage: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Message',
     },
     startTimestamp: {
         type: Date,
+        default: Date.now,
     },
 })
 
-
 const Conversation = mongoose.model("Conversation", conversationSchema)
 
-export default Conversation
+export default Conversation;
+
 

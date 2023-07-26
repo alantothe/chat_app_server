@@ -2,13 +2,14 @@ import mongoose from "mongoose";
 
 const friendRequestSchema = mongoose.Schema({
     requesterId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true,
     },
     recipientId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true,
-
     },
     status: {
         type: String,
@@ -16,13 +17,16 @@ const friendRequestSchema = mongoose.Schema({
     },
     createdAt: {
         type: Date,
+        default: Date.now,
     },
     updatedAt: {
         type: Date,
+        default: Date.now, 
     },
+}, {
+    timestamps: true 
 })
-
 
 const FriendRequest = mongoose.model("FriendRequest", friendRequestSchema)
 
-export default FriendRequest
+export default FriendRequest;
