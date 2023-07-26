@@ -27,6 +27,9 @@ export const createUser = async (req, res) => {
             friendRequest: [],
             isOnline: false,
             friends: [],
+            conversations:[],
+            groupConversations:[],
+            
         });
 
         await user.save();
