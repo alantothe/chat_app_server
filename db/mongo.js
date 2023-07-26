@@ -1,10 +1,13 @@
 import mongoose from 'mongoose'
+import dotenv from 'dotenv'
 
-mongoose.set("returnOriginal", fasle)
+dotenv.config();
+mongoose.set("returnOriginal", false)
 
-//add .env here
+const connectString = process.env.MONGO_URI || "mongodb://localhost:27017/AlanCHAT_APP"
 
-mongoose.connect("mongodb://localhost:27017//ChatDB").catch((err)=> {
+
+mongoose.connect(connectString).catch((err)=> {
     console.error(err)
 console.log("Error connecting to Database", err)
 
