@@ -1,6 +1,7 @@
 import { Router } from "express";
 import usersRouter from "./users.js";
 import friendRequestRouter from "./friendRequest.js"
+import conversationRouter from "./conversation.js"
 
 
 
@@ -12,6 +13,7 @@ router.get("/", (req, res) => {
 
 router.use("/users", usersRouter);
 router.use("/friendRequest", friendRequestRouter)
+router.use("/conversation", conversationRouter)
 
 
 

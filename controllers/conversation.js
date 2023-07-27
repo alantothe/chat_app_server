@@ -10,13 +10,12 @@ export const createConversation = async (req,res) =>{
 
         user1Id,
         user2Id,
-        lastMessage,
+        lastMessage: null,
 
 
     })
 
-    const conversationSaved = conversation.save()
-
+    const conversationSaved = await conversation.save()
 
     // Push the new friend request's ID into the recipient's friendRequest array
     const user1Updated = await User.findByIdAndUpdate(
@@ -26,11 +25,10 @@ export const createConversation = async (req,res) =>{
         );
 
     const user2Updated = await User.findByIdAndUpdate(
-            user1Id,
+            user2Id,
             { $push: { conversations: conversationSaved._id } },
             { new: true }
             );
-
      // If all operations are successful, send the updated recipient data
      res.status(201).json({ message: 'Conversation Creeated!!', recipient: user1Updated, user2Updated  });
 
