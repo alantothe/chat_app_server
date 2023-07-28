@@ -51,6 +51,7 @@ export const friendRequestAccepted = async(req, res) => {
         const addRecipentID = await User.findByIdAndUpdate(
             recipientId,
             {$push:{ friends:requesterId  } },
+            {$pull: {friendRequest:friendRequestID }},
             { new: true }
         )
         // If all operations are successful, send the updated recipient data
