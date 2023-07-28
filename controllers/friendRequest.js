@@ -32,3 +32,36 @@ export const sendFriendRequest = async(req, res) => {
 
 
 }
+
+export const friendRequestAccepted = async(req, res) => {
+
+    const { friendRequestID, response, requesterId, recipientId } = req.body
+    if (response == "accepted"){
+    try{
+        const updateFriendRequest = await FriendRequest.findByIdAndUpdate(
+            friendRequestID,
+            { $set: { status: "accepted" } },
+            { new: true })
+
+        const addRequesterId = await User.findByIdAndUpdate(
+            requesterId,
+            {$push:{ friends:recipientId  } },
+            { new: true }
+        )
+        const addRecipentID = await User.findByIdAndUpdate(
+            recipientId,
+            {$push:{ friends:requesterId  } },
+            { new: true }
+        )
+        // If all operations are successful, send the updated recipient data
+        res.status(201).json({ message: 'Friend Request was sent successfully!', update: updateFriendRequest, add:addRequesterId, add: addRecipentID  });
+
+     
+    }catch (error) {
+        // If any operation fails, send the error
+        res.status(500).json({ error: error.message });
+    }
+
+
+}
+}

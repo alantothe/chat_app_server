@@ -5,5 +5,7 @@ const router = Router()
 
 
 router.post("/", controllers.sendFriendRequest)
+router.post("/accept", controllers.friendRequestAccepted)
+
 
 export default router

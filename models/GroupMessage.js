@@ -27,3 +27,4 @@ const groupMessageSchema = mongoose.Schema({
 const GroupMessage = mongoose.model("GroupMessage", groupMessageSchema)    
 
 export default GroupMessage;
+
