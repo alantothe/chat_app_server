@@ -28,14 +28,17 @@ export const createUser = async (req, res) => {
             isOnline: false,
             friends: [],
             conversations:[],
-            groupConversations:[],
+            
             
         });
 
-        await user.save();
+       const savedUser = await user.save();
+
+          // Emit the event // 
+        req.io.emit('new user', JSON.stringify(savedUser));
         
         
-        res.status(201).json({ message: 'User registered successfully' });
+        res.status(201).json({ message: 'User registered successfully', user: savedUser   });
 
     } catch (error) {
         console.error(error);

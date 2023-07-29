@@ -10,6 +10,8 @@ export const createConversation = async (req,res) =>{
     });
   
     const savedConversation = await conversation.save();
+    
+    req.io.emit('new conversation', JSON.stringify(savedConversation));
   
     memberIds.forEach(async (id) => {
       await User.findByIdAndUpdate(
@@ -22,22 +24,4 @@ export const createConversation = async (req,res) =>{
     res.status(201).json({ message: 'Conversation Created!', conversation: savedConversation
  });
   
-  
-
-    // Push the new friend request's ID into the recipient's friendRequest array
-    const user1Updated = await User.findByIdAndUpdate(
-        user1Id,
-        { $push: { conversations: conversationSaved._id } },
-        { new: true }
-        );
-
-    const user2Updated = await User.findByIdAndUpdate(
-            user2Id,
-            { $push: { conversations: conversationSaved._id } },
-            { new: true }
-            );
-     // If all operations are successful, send the updated recipient data
-     res.status(201).json({ message: 'Conversation Creeated!!', recipient: user1Updated, user2Updated  });
-
-
 };

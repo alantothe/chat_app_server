@@ -20,6 +20,14 @@ export const sendFriendRequest = async(req, res) => {
             { $push: { friendRequest: friendRequestSaved._id } },
             { new: true }
         );
+
+
+        req.io.emit("friend request sent: ", JSON.stringify({
+            friendRequest: friendRequestSaved,
+            requesterId,
+            recipientId
+        }));
+        
     
         // If all operations are successful, send the updated recipient data
         res.status(201).json({ message: 'Friend Request was sent successfully!', recipient: recipientUpdated });
@@ -52,8 +60,13 @@ export const friendRequestAccepted = async(req, res) => {
             recipientId,
             { $push: { friends: requesterId }, $pullAll: { friendRequest: [friendRequestID] } },
             { new: true });
+
+
+
+            
+          req.io.emit("Friend Request Accepted!", JSON.stringify({updateFriendRequest, addRequesterId, addRecipientId}))  
         // If all operations are successful, send the updated recipient data
-        res.status(201).json({ message: 'Friend Request was sent successfully!', update: updateFriendRequest, add:addRequesterId, removeAndAdd: addRecipientId,  });
+        res.status(201).json({ message: 'Friend Request was Accepted successfully!', update: updateFriendRequest, add:addRequesterId, removeAndAdd: addRecipientId,  });
 
      
     }catch (error) {
@@ -80,6 +93,11 @@ export const friendRequestRejected = async(req, res) => {
             recipientId,
             { $pullAll: { friendRequest: [friendRequestID] } },
             { new: true });
+
+
+
+            req.io.emit("Friend Request Rejected!", JSON.stringify({updateFriendRequest, addRecipientId}))  
+ 
         // If all operations are successful, send the updated recipient data
         res.status(201).json({ message: 'Friend Request was Rejected successfully!', update: updateFriendRequest, add: addRecipientId,  });
 
