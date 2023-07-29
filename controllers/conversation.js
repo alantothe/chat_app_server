@@ -2,20 +2,27 @@ import Conversation from "../models/Conversation.js"
 import User from "../models/User.js"
 
 export const createConversation = async (req,res) =>{
-
-    const {user1Id, user2Id } = req.body
-
-
+    const { memberIds } = req.body
+  
     const conversation = new Conversation ({
-
-        user1Id,
-        user2Id,
-        lastMessage: null,
-
-
-    })
-
-    const conversationSaved = await conversation.save()
+      members: memberIds,
+      lastMessage: null,
+    });
+  
+    const savedConversation = await conversation.save();
+  
+    memberIds.forEach(async (id) => {
+      await User.findByIdAndUpdate(
+        id,
+        { $push: { conversations: savedConversation._id } },
+        { new: true }
+      );
+    });
+  
+    res.status(201).json({ message: 'Conversation Created!', conversation: savedConversation
+ });
+  
+  
 
     // Push the new friend request's ID into the recipient's friendRequest array
     const user1Updated = await User.findByIdAndUpdate(
@@ -33,4 +40,4 @@ export const createConversation = async (req,res) =>{
      res.status(201).json({ message: 'Conversation Creeated!!', recipient: user1Updated, user2Updated  });
 
 
-} 
+};

@@ -52,10 +52,6 @@ const userSchema = mongoose.Schema ({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Conversation'
     }],
-    groupConversations:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'GroupConversation'
-    }]
 })      
 
     

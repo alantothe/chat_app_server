@@ -4,6 +4,6 @@ import * as controller from "../controllers/conversation.js"
 
 const router = Router()
 
-router.post("/", controller.createConversation)
+router.post("/create", controller.createConversation)
 
 export default router ; 
