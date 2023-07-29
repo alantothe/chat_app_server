@@ -1,6 +1,6 @@
 import Messages from "../models/Messages.js"
 
-export const createMessage =  async (req, res) => {
+export const createMessage = async (req, res) => {
 
     let { conversationId, senderId, message, img   } = req.body
 
@@ -18,6 +18,9 @@ export const createMessage =  async (req, res) => {
         })
 
         const messageSaved = await newMessage.save()
+
+          // Emit the event // 
+          req.io.emit('new message', JSON.stringify(messageSaved));
 
         // If all operations are successful
         res.status(201).json({ message: 'Message was sent successfully!', message: messageSaved });
