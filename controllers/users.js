@@ -39,12 +39,23 @@ export const createUser = async (req, res) => {
 
     const savedUser = await user.save();
 
-    // Emit the event //
-    req.io.emit("new user", JSON.stringify(savedUser));
+    const payload = {
+      _id: savedUser._id,
+      firstName: savedUser.firstName,
+      lastName: savedUser.lastName,
+      email: savedUser.email,
+      avatar: savedUser.avatar,
+      friendRequest: savedUser.friendRequest,
+      isOnline: savedUser.isOnline,
+      friends: savedUser.friends,
+      conversations: savedUser.conversations,
+      exp: parseInt(exp.getTime() / 1000),
+    };
 
-    res
-      .status(201)
-      .json({ message: "User registered successfully", user: savedUser });
+    // Emit the event //
+    // req.io.emit("new user", JSON.stringify(savedUser));
+    const token = jwt.sign(payload, TOKEN_KEY);
+    res.status(201).json({ token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
@@ -81,7 +92,7 @@ export const loginUser = async (req, res) => {
       res.status(201).json({ token });
     } else {
       res.status(401).json({
-        message: "User registered successfully",
+        message: "User Logged in successfully",
         error: "Invalid Credentials",
       });
     }
