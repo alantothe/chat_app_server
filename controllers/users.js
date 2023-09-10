@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import FriendRequest from "../models/FriendRequest.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 // for development purposes
@@ -104,10 +105,28 @@ export const loginUser = async (req, res) => {
 
 export const getUsers = async (req, res) => {
   try {
-    let users = await User.find();
+    let users = await User.find()
+      .populate({
+        path: "friendRequestsSent",
+        model: "FriendRequest",
+        populate: {
+          path: "requesterId recipientId",
+          model: "User",
+          select: "firstName lastName avatar", // selecting only specific fields
+        },
+      })
+      .populate({
+        path: "friendRequestsReceived",
+        model: "FriendRequest",
+        populate: {
+          path: "requesterId recipientId",
+          model: "User",
+          select: "firstName lastName avatar", // selecting only specific fields
+        },
+      });
 
     res.json(users);
-  } catch {
+  } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
   }

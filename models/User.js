@@ -2,59 +2,77 @@ import mongoose from "mongoose";
 
 const emailPattern = /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 
-const userSchema = mongoose.Schema ({
-    
+const userSchema = mongoose.Schema(
+  {
     firstName: {
-        type: String,
-        required: true,
-        trim: true,
-        minlength: 2,
-        maxlength: 20
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 2,
+      maxlength: 20,
     },
     lastName: {
-        type: String,
-        required: true,
-        trim: true,
-        minlength: 2,
-        maxlength: 20
-    },  
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 2,
+      maxlength: 20,
+    },
     email: {
-        type: String,
-        required: true,
-        trim: true,
-        minlength: 5,
-        maxlength: 50,
-        match: emailPattern, 
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 5,
+      maxlength: 50,
+      match: emailPattern,
     },
     password: {
-        type: String,
-        required: true,
-        trim: true,
-        minlength: 5,
-        maxlength: 100,
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 5,
+      maxlength: 100,
     },
-    avatar: {  
-        type: String,
+    avatar: {
+      type: String,
     },
-    friendRequest: [{
+    friendRequest: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }],
+        ref: "User",
+      },
+    ],
     isOnline: {
-        type: Boolean,
+      type: Boolean,
     },
-    friends: [{
+    friends: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        
-    }],
-    conversations:[{
+        ref: "User",
+      },
+    ],
+    conversations: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Conversation'
-    }],
-})      
+        ref: "Conversation",
+      },
+    ],
+  },
+  { toJSON: { virtuals: true }, toObject: { virtuals: true } }
+);
 
-    
-const User = mongoose.model("User", userSchema)
+userSchema.virtual("friendRequestsSent", {
+  ref: "FriendRequest",
+  localField: "_id",
+  foreignField: "requesterId",
+});
 
-export default User
+userSchema.virtual("friendRequestsReceived", {
+  ref: "FriendRequest",
+  localField: "_id",
+  foreignField: "recipientId",
+});
+
+const User = mongoose.model("User", userSchema);
+
+export default User;
