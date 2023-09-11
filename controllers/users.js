@@ -46,10 +46,6 @@ export const createUser = async (req, res) => {
       lastName: savedUser.lastName,
       email: savedUser.email,
       avatar: savedUser.avatar,
-      friendRequest: savedUser.friendRequest,
-      isOnline: savedUser.isOnline,
-      friends: savedUser.friends,
-      conversations: savedUser.conversations,
       exp: parseInt(exp.getTime() / 1000),
     };
 
@@ -81,10 +77,6 @@ export const loginUser = async (req, res) => {
         lastName: user.lastName,
         email: user.email,
         avatar: user.avatar,
-        friendRequest: user.friendRequest,
-        isOnline: user.isOnline,
-        friends: user.friends,
-        conversations: user.conversations,
 
         exp: parseInt(exp.getTime() / 1000),
       };
