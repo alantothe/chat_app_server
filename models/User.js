@@ -73,6 +73,12 @@ userSchema.virtual("friendRequestsReceived", {
   foreignField: "recipientId",
 });
 
+userSchema.virtual("detailedFriends", {
+  ref: "User",
+  localField: "friends",
+  foreignField: "_id",
+});
+
 const User = mongoose.model("User", userSchema);
 
 export default User;

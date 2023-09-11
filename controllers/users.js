@@ -112,7 +112,7 @@ export const getUsers = async (req, res) => {
         populate: {
           path: "requesterId recipientId",
           model: "User",
-          select: "firstName lastName avatar", // selecting only specific fields
+          select: "firstName lastName avatar",
         },
       })
       .populate({
@@ -121,8 +121,13 @@ export const getUsers = async (req, res) => {
         populate: {
           path: "requesterId recipientId",
           model: "User",
-          select: "firstName lastName avatar", // selecting only specific fields
+          select: "firstName lastName avatar",
         },
+      })
+      .populate({
+        path: "detailedFriends",
+        model: "User",
+        select: "firstName lastName avatar isOnline",
       });
 
     res.json(users);
