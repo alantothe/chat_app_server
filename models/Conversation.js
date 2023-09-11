@@ -8,8 +8,19 @@ const conversationSchema = mongoose.Schema(
     },
     lastMessage: String,
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
+
+conversationSchema.virtual("detailedMembers", {
+  ref: "User",
+  localField: "members",
+  foreignField: "_id",
+  justOne: false, // indicate it's an array
+});
 
 const Conversation = mongoose.model("Conversation", conversationSchema);
 

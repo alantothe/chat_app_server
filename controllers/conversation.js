@@ -30,7 +30,12 @@ export const createConversation = async (req, res) => {
 export const fetchConversationById = async (req, res) => {
   const { id } = req.params;
   try {
-    const conversations = await Conversation.find(id);
+    const conversations = await Conversation.find(id).populate({
+      path: "detailedMembers",
+      model: "User",
+      select: "firstName lastName avatar isOnline",
+    });
+
     res.status(201).json({
       message: "User is in the following Conversations!",
       conversations: conversations,
