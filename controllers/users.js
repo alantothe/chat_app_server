@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import FriendRequest from "../models/FriendRequest.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { json } from "express";
 // for development purposes
 
 let TOKEN_KEY = "areallylonggoodkey";
@@ -42,9 +43,6 @@ export const createUser = async (req, res) => {
 
     const payload = {
       _id: savedUser._id,
-      firstName: savedUser.firstName,
-      lastName: savedUser.lastName,
-      email: savedUser.email,
       avatar: savedUser.avatar,
       exp: parseInt(exp.getTime() / 1000),
     };
@@ -73,9 +71,6 @@ export const loginUser = async (req, res) => {
     if (await bcrypt.compare(password, user.password)) {
       const payload = {
         _id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
         avatar: user.avatar,
 
         exp: parseInt(exp.getTime() / 1000),
@@ -123,6 +118,41 @@ export const getUsers = async (req, res) => {
       });
 
     res.json(users);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getUserById = async (req, res) => {
+  const { _id } = req.params;
+
+  try {
+    let user = await User.findById(_id)
+      .populate({
+        path: "friendRequestsSent",
+        model: "FriendRequest",
+        populate: {
+          path: "requesterId recipientId",
+          model: "User",
+          select: "firstName lastName avatar",
+        },
+      })
+      .populate({
+        path: "friendRequestsReceived",
+        model: "FriendRequest",
+        populate: {
+          path: "requesterId recipientId",
+          model: "User",
+          select: "firstName lastName avatar",
+        },
+      })
+      .populate({
+        path: "detailedFriends",
+        model: "User",
+        select: "firstName lastName avatar isOnline",
+      });
+    res.json(user);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
