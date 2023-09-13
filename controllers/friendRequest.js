@@ -28,7 +28,7 @@ export const sendFriendRequest = async (req, res) => {
       { new: true }
     );
 
-    req.io.emit("friend request sent");
+    req.io.emit("friend request sent", { data: recipientId });
 
     res.status(201).json({
       message: "Friend Request was sent successfully!",
@@ -63,10 +63,8 @@ export const friendRequestAccepted = async (req, res) => {
         { new: true }
       );
 
-      req.io.emit(
-        "Friend Request Accepted!",
-        JSON.stringify({ updateFriendRequest, addRequesterId, addRecipientId })
-      );
+      req.io.emit("friend request accepted", { data: requesterId });
+
       // If all operations are successful, send the updated recipient data
       res.status(201).json({
         message: "Friend Request was Accepted successfully!",
