@@ -28,14 +28,7 @@ export const sendFriendRequest = async (req, res) => {
       { new: true }
     );
 
-    req.io.emit(
-      "friend request sent: ",
-      JSON.stringify({
-        friendRequest: friendRequestSaved,
-        requesterId,
-        recipientId,
-      })
-    );
+    req.io.emit("friend request sent");
 
     res.status(201).json({
       message: "Friend Request was sent successfully!",

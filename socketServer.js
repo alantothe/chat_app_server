@@ -1,27 +1,25 @@
-import {Server} from "socket.io";
+import { Server } from "socket.io";
 
 function socketServer(server) {
   const io = new Server(server, {
     cors: {
       origin: "*",
-      methods: ["GET", "POST"]
-    }
+      methods: ["GET", "POST"],
+    },
   });
 
   io.on("connection", (socket) => {
-    console.log(`A User connected with Socked ID: ${socket.id}`);
-    // send a message to the client
-    
+    // send a message to the client from server
+
     socket.emit("hello from server", 1, "2", { 3: Buffer.from([4]) });
 
     // receive a message from the client
-    socket.on("hello from client", (...args) => {
-      // ...
+    socket.on("hello from client", (data) => {
+      console.log(`User ${data.data} connected with Socked ID: ${socket.id}`);
     });
   });
 
-  return io
-
+  return io;
 }
 
 export default socketServer;
