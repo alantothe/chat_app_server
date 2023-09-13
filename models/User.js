@@ -65,6 +65,7 @@ userSchema.virtual("friendRequestsSent", {
   ref: "FriendRequest",
   localField: "_id",
   foreignField: "requesterId",
+  match: { status: "pending" },
 });
 
 userSchema.virtual("friendRequestsReceived", {
