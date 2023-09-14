@@ -15,6 +15,7 @@ export const createMessage = async (req, res) => {
       conversation = new Conversation({
         members: [senderId, recipientId],
         lastMessage: message, // set message
+        lastMessageFrom: senderId,
       });
       await conversation.save();
     } else {
