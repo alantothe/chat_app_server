@@ -31,7 +31,7 @@ export const fetchConversationById = async (req, res) => {
   const { id } = req.params;
   try {
     const conversations = await Conversation.find(id).populate({
-      path: "detailedMembers",
+      path: "detailedLastMessageFrom",
       model: "User",
       select: "firstName lastName avatar isOnline",
     });
@@ -74,7 +74,7 @@ export const fetchConversationsByIdSingle = async (req, res) => {
       members: _id,
       $expr: { $eq: [{ $size: "$members" }, 2] }, // only has 2 members
     }).populate({
-      path: "detailedMembers",
+      path: "detailedLastMessageFrom",
       model: "User",
       select: "firstName lastName avatar isOnline",
     });

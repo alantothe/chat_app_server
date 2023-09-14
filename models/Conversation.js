@@ -25,6 +25,11 @@ conversationSchema.virtual("detailedMembers", {
   foreignField: "_id",
   justOne: false, // indicate it's an array
 });
+conversationSchema.virtual("detailedLastMessageFrom", {
+  ref: "User",
+  localField: "lastMessageFrom",
+  foreignField: "_id",
+});
 
 const Conversation = mongoose.model("Conversation", conversationSchema);
 
