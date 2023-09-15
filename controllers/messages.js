@@ -95,7 +95,13 @@ export const getMessagesForMembers = async (req, res) => {
     // retrieve all messages linked to the found conversation ID
     const messages = await Messages.find({
       conversationId: conversation._id,
-    }).sort({ createdAt: 1 }); // sort by creation time, oldest first
+    })
+      .sort({ createdAt: 1 })
+      .populate({
+        path: "detailedSender",
+        model: "User",
+        select: "firstName lastName avatar isOnline",
+      });
 
     res.status(200).json(messages);
   } catch (error) {

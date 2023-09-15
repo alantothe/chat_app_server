@@ -37,6 +37,11 @@ const messageSchema = mongoose.Schema(
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
+messageSchema.virtual("detailedSender", {
+  ref: "User",
+  localField: "senderId",
+  foreignField: "_id",
+});
 
 const Message = mongoose.model("Message", messageSchema);
 
