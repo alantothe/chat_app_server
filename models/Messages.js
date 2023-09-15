@@ -23,6 +23,17 @@ const messageSchema = mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    seenBy: [
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        timestamp: {
+          type: Date,
+        },
+      },
+    ],
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );

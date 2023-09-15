@@ -11,6 +11,30 @@ const conversationSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    lastSeenMessage: [
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        messageId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Message",
+        },
+      },
+    ],
+    unreadCount: [
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        count: {
+          type: Number,
+          default: 0,
+        },
+      },
+    ],
   },
   {
     timestamps: true,

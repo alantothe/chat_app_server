@@ -73,11 +73,17 @@ export const fetchConversationsByIdSingle = async (req, res) => {
     const conversations = await Conversation.find({
       members: _id,
       $expr: { $eq: [{ $size: "$members" }, 2] }, // only has 2 members
-    }).populate({
-      path: "detailedLastMessageFrom",
-      model: "User",
-      select: "firstName lastName avatar isOnline",
-    });
+    })
+      .populate({
+        path: "detailedLastMessageFrom",
+        model: "User",
+        select: "firstName lastName avatar isOnline",
+      })
+      .populate({
+        path: "detailedMembers",
+        model: "User",
+        select: "firstName lastName avatar isOnline",
+      });
 
     res.status(201).json(conversations);
   } catch (error) {
