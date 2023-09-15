@@ -89,9 +89,7 @@ export const getMessagesForMembers = async (req, res) => {
     });
 
     if (!conversation) {
-      return res.status(404).json({
-        message: "No conversation found between the specified users.",
-      });
+      return res.status(200).json([]); // an empty array if no conversation found
     }
 
     // retrieve all messages linked to the found conversation ID
@@ -99,10 +97,7 @@ export const getMessagesForMembers = async (req, res) => {
       conversationId: conversation._id,
     }).sort({ createdAt: 1 }); // sort by creation time, oldest first
 
-    res.status(200).json({
-      message: "Messages fetched successfully.",
-      messages: messages,
-    });
+    res.status(200).json(messages);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
