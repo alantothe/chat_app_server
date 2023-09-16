@@ -91,3 +91,29 @@ export const fetchConversationsByIdSingle = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const fetchGroupConversationsById = async (req, res) => {
+  const { _id } = req.params;
+
+  try {
+    const conversations = await Conversation.find({
+      members: _id,
+      $expr: { $gt: [{ $size: "$members" }, 2] }, // more than 2 members
+    })
+      .populate({
+        path: "detailedLastMessageFrom",
+        model: "User",
+        select: "firstName lastName avatar isOnline",
+      })
+      .populate({
+        path: "detailedMembers",
+        model: "User",
+        select: "firstName lastName avatar isOnline",
+      });
+
+    res.status(201).json(conversations);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+};

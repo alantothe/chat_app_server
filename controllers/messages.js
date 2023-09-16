@@ -62,8 +62,12 @@ export const createMessage = async (req, res) => {
 
     const messageSaved = await newMessage.save();
 
-    // req.io.emit("new message", JSON.stringify(messageSaved));
-
+    // Emit the entire conversation object
+    if (conversation) {
+      req.io.emit("message sent", { data: conversation });
+    } else {
+      console.error("Conversation is not defined");
+    }
     res.status(201).json({
       message: "Message was sent successfully!",
       messageData: messageSaved,
