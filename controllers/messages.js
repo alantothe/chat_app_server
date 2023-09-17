@@ -1,4 +1,4 @@
-import Messages from "../models/Messages.js";
+import Message from "../models/Messages.js";
 import Conversation from "../models/Conversation.js";
 
 export const createMessage = async (req, res) => {
@@ -97,7 +97,7 @@ export const getMessagesForMembers = async (req, res) => {
     }
 
     // retrieve all messages linked to the found conversation ID
-    const messages = await Messages.find({
+    const messages = await Message.find({
       conversationId: conversation._id,
     })
       .sort({ createdAt: 1 })
