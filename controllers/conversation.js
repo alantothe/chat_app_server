@@ -117,3 +117,37 @@ export const fetchGroupConversationsById = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const seenBy = async (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const { _id } = req.body;
+
+    if (!conversationId || !_id) {
+      return res
+        .status(400)
+        .json({ error: "Conversation ID and User ID are required." });
+    }
+
+    const conversation = await Conversation.findById(conversationId);
+    if (!conversation) {
+      return res.status(404).json({ error: "Conversation not found." });
+    }
+
+    // check if the user has already marked the conversation as seen
+    const hasSeen = conversation.lastSeenBy.some(
+      (entry) => String(entry) === String(_id)
+    );
+
+    if (!hasSeen) {
+      conversation.lastSeenBy.push(_id);
+      await conversation.save();
+    }
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Seen status updated." });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

@@ -11,28 +11,10 @@ const conversationSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    lastSeenMessage: [
+    lastSeenBy: [
       {
-        userId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-        },
-        messageId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Message",
-        },
-      },
-    ],
-    unreadCount: [
-      {
-        userId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-        },
-        count: {
-          type: Number,
-          default: 0,
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
       },
     ],
   },
@@ -47,7 +29,6 @@ conversationSchema.virtual("detailedMembers", {
   ref: "User",
   localField: "members",
   foreignField: "_id",
-  justOne: false, // indicate it's an array
 });
 conversationSchema.virtual("detailedLastMessageFrom", {
   ref: "User",

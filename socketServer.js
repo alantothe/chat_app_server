@@ -1,5 +1,8 @@
 import { Server } from "socket.io";
 
+// Maintain a mapping of userId to socket.id
+let userSocketMap = new Map();
+
 function socketServer(server) {
   const io = new Server(server, {
     cors: {
@@ -9,15 +12,28 @@ function socketServer(server) {
   });
 
   io.on("connection", (socket) => {
-    // send a message to the client from server
+    // handle setting of user's socket
+    socket.on("set-user", (userIdObject) => {
+      const actualUserId = userIdObject.data;
+      userSocketMap.set(actualUserId, socket.id);
+      console.log(
+        `User ${actualUserId} connected with Socket ID: ${socket.id}`
+      );
+    });
 
-    socket.emit("hello from server", 1, "2", { 3: Buffer.from([4]) });
-
-    // receive a message from the client
-    socket.on("hello from client", (data) => {
-      console.log(`User ${data.data} connected with Socked ID: ${socket.id}`);
+    socket.on("disconnect", () => {
+      // delete user from the mapping on disconnect
+      for (let [userId, socketId] of userSocketMap.entries()) {
+        if (socketId === socket.id) {
+          userSocketMap.delete(userId);
+          break;
+        }
+      }
     });
   });
+
+  // attach the userSocketMap to io so it can be accessed in the middleware
+  io.userSocketMap = userSocketMap;
 
   return io;
 }
