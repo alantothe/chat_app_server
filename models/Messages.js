@@ -42,6 +42,11 @@ messageSchema.virtual("detailedSender", {
   localField: "senderId",
   foreignField: "_id",
 });
+messageSchema.virtual("detailedConversation", {
+  ref: "Conversation",
+  localField: "conversationId",
+  foreignField: "_id",
+});
 
 const Message = mongoose.model("Message", messageSchema);
 

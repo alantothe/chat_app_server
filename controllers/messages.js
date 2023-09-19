@@ -111,3 +111,23 @@ export const getMessagesForMembers = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const searchMessages = async (req, res) => {
+  const searchTerm = req.query.q;
+
+  try {
+    const messages = await Message.find({
+      message: new RegExp(searchTerm, "i"),
+    });
+    const conversationIds = messages.map((msg) => msg.conversationId);
+
+    // Fetch unique conversations based on the found messages
+    const conversations = await Conversation.find({
+      _id: { $in: conversationIds },
+    });
+
+    res.json(conversations);
+  } catch (error) {
+    res.status(500).json({ error: "Error searching messages" });
+  }
+};
