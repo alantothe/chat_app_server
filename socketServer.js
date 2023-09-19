@@ -46,7 +46,17 @@ function socketServer(server) {
         const conversations = await Conversation.find({
           _id: { $in: conversationIds },
           members: userId,
-        });
+        })
+          .populate({
+            path: "detailedLastMessageFrom",
+            model: "User",
+            select: "firstName lastName avatar isOnline",
+          })
+          .populate({
+            path: "detailedMembers",
+            model: "User",
+            select: "firstName lastName avatar isOnline",
+          });
 
         socket.emit("searchResults", conversations);
       } catch (error) {
