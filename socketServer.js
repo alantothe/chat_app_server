@@ -63,6 +63,11 @@ function socketServer(server) {
         console.error("Error handling search event:", error);
       }
     });
+    socket.on("clearSearch", () => {
+      console.log("Clear search request received for Socket ID:", socket.id);
+      // send a empty array to indicate no results
+      socket.emit("searchResults", []);
+    });
 
     socket.on("disconnect", () => {
       // delete user from the mapping on disconnect

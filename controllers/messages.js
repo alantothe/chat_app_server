@@ -26,8 +26,11 @@ export const createMessage = async (req, res) => {
       await conversation.save();
     } else {
       // Update the last message for the existing conversation
-      conversation.lastMessage = message;
-      conversation.lastSeenBy = [senderId];
+      conversation.set({
+        lastMessage: message,
+        lastSeenBy: [senderId],
+        lastMessageFrom: senderId,
+      });
       await conversation.save();
     }
 
