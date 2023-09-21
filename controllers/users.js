@@ -3,9 +3,12 @@ import FriendRequest from "../models/FriendRequest.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { json } from "express";
-// for development purposes
+import dotenv from "dotenv";
 
-let TOKEN_KEY = "areallylonggoodkey";
+dotenv.config();
+
+let TOKEN_KEY = process.env.TOKEN_KEY;
+
 // for JWT expiration
 const today = new Date();
 const exp = new Date(today);
