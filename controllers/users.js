@@ -22,7 +22,7 @@ export const createUser = async (req, res) => {
     // check if user already exists
     user = await User.findOne({ email });
     if (user) {
-      return res.status(400).json({ error: "User already exists" });
+      return res.status(400).json({ error: "Email already in use" });
     }
 
     // hash
