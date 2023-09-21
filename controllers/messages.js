@@ -7,34 +7,37 @@ export const createMessage = async (req, res) => {
   // Convert to array if a string is passed in
   recipientIds = Array.isArray(recipientIds) ? recipientIds : [recipientIds];
 
-  try {
-    const members = [senderId, ...recipientIds];
+  const members = [senderId, ...recipientIds];
 
-    // Check if there's an existing conversation between the members
+  try {
+    // if group conversation with more than 2 members,  lastSeenBy is an empty array
+    let initialLastSeenBy = members.length > 2 ? [] : [senderId];
+
+    // check if there's an existing conversation between the members
     let conversation = await Conversation.findOne({
       members: { $all: members, $size: members.length },
     });
 
-    // If no conversation exists, create one
+    // if no conversation exists, create one
     if (!conversation) {
       conversation = new Conversation({
         members: members,
         lastMessage: message,
         lastMessageFrom: senderId,
-        lastSeenBy: [senderId],
+        lastSeenBy: initialLastSeenBy,
       });
       await conversation.save();
     } else {
-      // Update the last message for the existing conversation
+      // update the last message for the existing conversation
       conversation.set({
         lastMessage: message,
-        lastSeenBy: [senderId],
+        lastSeenBy: initialLastSeenBy,
         lastMessageFrom: senderId,
       });
       await conversation.save();
     }
 
-    // Create the new message and link it to the conversation
+    // create the new message and link it to the conversation
     const newMessage = new Messages({
       conversationId: conversation._id,
       senderId,
@@ -50,13 +53,13 @@ export const createMessage = async (req, res) => {
 
     const messageSaved = await newMessage.save();
 
-    // Emit the entire conversation object with detailed members
+    // emit the entire conversation object with detailed members
     if (conversation) {
       // Populate detailed members and last message sender details
       await conversation.populate("detailedMembers");
 
       for (let recipientId of recipientIds) {
-        // Get the socket id for each recipient
+        // get the socket id for each recipient
         let recipientSocketId = req.io.userSocketMap.get(recipientId);
         if (recipientSocketId) {
           req.io
@@ -68,7 +71,7 @@ export const createMessage = async (req, res) => {
       console.error("Conversation is not defined");
     }
 
-    // Return a response with the message, the saved message data, and detailed members
+    // return a response with the message, the saved message data, and detailed members
     res.status(201).json({
       message: "Message was sent successfully!",
       messageData: messageSaved,

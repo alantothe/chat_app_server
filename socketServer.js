@@ -71,12 +71,14 @@ function socketServer(server) {
 
     socket.on("disconnect", () => {
       // delete user from the mapping on disconnect
+
       for (let [userId, socketId] of userSocketMap.entries()) {
         if (socketId === socket.id) {
           userSocketMap.delete(userId);
           break;
         }
       }
+      console.log(`Socket ID: ${socket.id} disconnected`);
     });
   });
 
